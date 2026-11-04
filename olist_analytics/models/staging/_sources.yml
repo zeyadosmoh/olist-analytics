@@ -1,0 +1,25 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw Olist CSVs loaded as-is by load_raw.sh. Every column is text.
+    schema: raw
+    tables:
+      - name: orders
+        description: One row per order with status and lifecycle timestamps.
+      - name: order_items
+        description: One row per item in an order.
+      - name: order_payments
+        description: One row per payment for an order (an order can have several).
+      - name: order_reviews
+        description: Customer reviews of orders.
+      - name: customers
+        description: One row per customer_id (an order-level customer key).
+      - name: products
+        description: Product catalog with category and physical dimensions.
+      - name: sellers
+        description: Sellers and their location.
+      - name: geolocation
+        description: Zip code prefix to lat/lng lookup.
+      - name: product_category_name_translation
+        description: Portuguese to English product category names.
