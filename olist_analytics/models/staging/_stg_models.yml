@@ -1,0 +1,37 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: Orders with typed lifecycle timestamps.
+    columns:
+      - name: order_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+
+  - name: stg_order_items
+    description: Items within each order, with price and freight as numerics.
+    columns:
+      - name: order_item_key
+        description: Primary key, order_id + '-' + item_number.
+        data_tests: [unique, not_null]
+
+  - name: stg_order_payments
+    description: Payments for each order; an order may have several.
+    columns:
+      - name: order_payment_key
+        description: Primary key, order_id + '-' + payment_sequence.
+        data_tests: [unique, not_null]
+
+  - name: stg_customers
+    description: Customers keyed by the per-order customer_id.
+    columns:
+      - name: customer_id
+        description: Primary key (one per order).
+        data_tests: [unique, not_null]
+
+  - name: stg_products
+    description: Product catalog with cleaned column names and numeric dimensions.
+    columns:
+      - name: product_id
+        description: Primary key.
+        data_tests: [unique, not_null]
