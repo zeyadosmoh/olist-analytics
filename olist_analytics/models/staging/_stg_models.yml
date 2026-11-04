@@ -35,3 +35,31 @@ models:
       - name: product_id
         description: Primary key.
         data_tests: [unique, not_null]
+
+  - name: stg_order_reviews
+    description: Customer reviews. One row per (review, order) pair.
+    columns:
+      - name: review_key
+        description: Primary key, review_id + '-' + order_id.
+        data_tests: [unique, not_null]
+      - name: score
+        description: Review score from 1 (worst) to 5 (best).
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [1, 2, 3, 4, 5]
+                quote: false
+
+  - name: stg_sellers
+    description: Sellers and their location.
+    columns:
+      - name: seller_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+
+  - name: stg_product_category_translation
+    description: Lookup from Portuguese to English category names.
+    columns:
+      - name: category_name
+        description: Primary key, Portuguese category name.
+        data_tests: [unique, not_null]
