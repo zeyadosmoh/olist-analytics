@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: fct_orders
+    description: >
+      One row per order. Joins the order with its customer, item totals,
+      payment totals, delivery KPIs and latest review score.
+      Revenue rule: see the `revenue` column.
+    columns:
+      - name: order_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: customer_unique_id
+        description: The real customer (person). Foreign key to dim_customers.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_customers')
+                field: customer_unique_id
+      - name: status
+        description: '{{ doc("order_status") }}'
+        data_tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: [created, approved, invoiced, processing, shipped, delivered, canceled, unavailable]
+      - name: is_revenue_order
+        description: True when the order counts toward revenue (status not canceled/unavailable).
+      - name: purchased_at
+        description: When the customer placed the order.
+      - name: delivered_to_customer_at
+        description: When the customer received the order. Null if not delivered.
+      - name: estimated_delivery_at
+        description: Delivery date promised to the customer at purchase.
+      - name: items_count
+        description: Number of items in the order (0 if no items were recorded).
+      - name: items_value
+        description: Sum of item prices.
+      - name: freight_value
+        description: Sum of item freight (shipping) costs.
+      - name: revenue
+        description: '{{ doc("revenue_definition") }}'
+      - name: payment_total
+        description: Sum of all payments for the order (can include installment interest).
+      - name: delivery_days
+        description: Calendar days from purchase to delivery. Null if not delivered.
+      - name: is_late
+        description: True if delivered on a later day than the estimate. Null if not delivered.
+      - name: review_score
+        description: Score (1-5) of the most recent review. Null if no review.
+
+  - name: dim_customers
+    description: >
+      One row per real customer (customer_unique_id). Olist creates a new
+      customer_id for every order, so this groups those orders by person.
+    columns:
+      - name: customer_unique_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: state
+        description: Customer state (from their most recent order).
+      - name: city
+        description: Customer city (from their most recent order).
+      - name: first_order_date
+        description: Date of the customer's first order.
+      - name: last_order_date
+        description: Date of the customer's most recent order.
+      - name: orders_count
+        description: Number of orders placed (all statuses).
+      - name: lifetime_value
+        description: Total revenue from this customer, using the standard revenue rule.
+      - name: is_repeat
+        description: True if the customer placed more than one order.
+
+  - name: dim_products
+    description: One row per product, with English category name and dimensions.
+    columns:
+      - name: product_id
+        description: Primary key.
+        data_tests: [unique, not_null]
+      - name: category
+        description: >
+          English category name. Falls back to the Portuguese name when no
+          translation exists, and to 'unknown' when the product has no category.
+        data_tests: [not_null]
+      - name: category_name_pt
+        description: Original Portuguese category name.
+
+  - name: fct_revenue_monthly
+    description: >
+      One row per purchase month and product category, with orders, items and
+      revenue. Uses the standard revenue rule (canceled/unavailable excluded).
+    columns:
+      - name: month_category_key
+        description: Primary key, month + '|' + category.
+        data_tests: [unique, not_null]
+      - name: month
+        description: First day of the purchase month.
+        data_tests: [not_null]
+      - name: category
+        description: English product category. Foreign key to dim_products.category.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_products')
+                field: category
+      - name: orders
+        description: Distinct orders with at least one item in this category and month.
+      - name: items
+        description: Number of items sold.
+      - name: revenue
+        description: Price + freight of those items.

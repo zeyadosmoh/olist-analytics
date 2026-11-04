@@ -24,10 +24,14 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 
 # Configuring models
-# Staging models are light cleanup on top of raw: build them as views
-# in their own schema (dbt names it <target_schema>_staging).
+# Staging: light cleanup on top of raw, built as views in schema "staging".
+# Marts: business-ready models for dashboards, built as tables in schema "marts".
+# (Schema names are used as-is; see macros/generate_schema_name.sql.)
 models:
   olist_analytics:
     staging:
       +materialized: view
       +schema: staging
+    marts:
+      +materialized: table
+      +schema: marts
