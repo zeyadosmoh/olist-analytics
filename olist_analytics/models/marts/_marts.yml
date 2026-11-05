@@ -18,6 +18,8 @@ models:
               arguments:
                 to: ref('dim_customers')
                 field: customer_unique_id
+      - name: customer_state
+        description: Customer state at the time of this order (Brazilian UF code).
       - name: status
         description: '{{ doc("order_status") }}'
         data_tests:
@@ -112,3 +114,34 @@ models:
         description: Number of items sold.
       - name: revenue
         description: Price + freight of those items.
+
+  - name: fct_order_items
+    description: >
+      One row per item sold, with product category and order context
+      (purchase time, customer, customer state at order time). Used by
+      dashboards to slice revenue by category and state with one filter set.
+    columns:
+      - name: order_item_key
+        description: Primary key, order_id + '-' + item_number.
+        data_tests: [unique, not_null]
+      - name: order_id
+        description: Foreign key to fct_orders.
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('fct_orders')
+                field: order_id
+      - name: category
+        description: English product category ('unknown' when missing).
+        data_tests: [not_null]
+      - name: customer_unique_id
+        description: The real customer (person).
+      - name: customer_state
+        description: Customer state at the time of the order.
+      - name: purchased_at
+        description: When the order was placed.
+      - name: is_revenue_order
+        description: True when the order counts toward revenue.
+      - name: revenue
+        description: Item price + freight; 0 for canceled/unavailable orders.

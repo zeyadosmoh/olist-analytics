@@ -6,7 +6,7 @@ with orders as (
 ),
 
 customers as (
-    select customer_id, customer_unique_id from {{ ref('stg_customers') }}
+    select customer_id, customer_unique_id, state from {{ ref('stg_customers') }}
 ),
 
 items as (
@@ -39,6 +39,7 @@ latest_review as (
 select
     o.order_id,
     c.customer_unique_id,
+    c.state                                                     as customer_state,
     o.status,
     o.status not in ('canceled', 'unavailable')                 as is_revenue_order,
 
