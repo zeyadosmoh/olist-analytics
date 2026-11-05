@@ -165,14 +165,21 @@ def col(name: str) -> str:
 CARDS = [
     # ---- 1) KPIs -------------------------------------------------------
     dict(
-        key="kpi_revenue", name="KPI - Revenue", display="scalar",
+        key="kpi_revenue", name="Revenue", aliases=["KPI - Revenue"], display="scalar",
         table="fct_order_items",
         description=f"Total revenue for the selected filters. {REVENUE_NOTE}",
         sql=f"with items as ({ITEMS_FILTERED})\nselect sum(revenue) as revenue from items",
-        viz={"column_settings": {col("revenue"): {**BRL, "decimals": 0}}},
+        # Shown in millions with 2 decimals (e.g. R$15.74M), not compact "R$16M".
+        viz={
+            "scalar.compact_primary_number": False,
+            "column_settings": {col("revenue"): {
+                "number_style": "decimal", "scale": 0.000001, "decimals": 2,
+                "prefix": "R$", "suffix": "M",
+            }},
+        },
     ),
     dict(
-        key="kpi_orders", name="KPI - Orders", display="scalar",
+        key="kpi_orders", name="Orders", aliases=["KPI - Orders"], display="scalar",
         table="fct_order_items",
         description="Number of distinct orders that count toward revenue "
                     "(canceled/unavailable excluded).",
@@ -180,7 +187,8 @@ CARDS = [
         viz={},
     ),
     dict(
-        key="kpi_aov", name="KPI - Average order value", display="scalar",
+        key="kpi_aov", name="Avg order value", aliases=["KPI - Average order value"],
+        display="scalar",
         table="fct_order_items",
         description="Revenue / orders. With a category filter, only that "
                     f"category's items count. {REVENUE_NOTE}",
@@ -189,7 +197,7 @@ CARDS = [
         viz={"column_settings": {col("avg_order_value"): {**BRL, "decimals": 2}}},
     ),
     dict(
-        key="kpi_customers", name="KPI - Customers", display="scalar",
+        key="kpi_customers", name="Customers", aliases=["KPI - Customers"], display="scalar",
         table="fct_order_items",
         description="Distinct real customers (customer_unique_id) with at least "
                     "one revenue order in the selected filters.",
@@ -198,7 +206,8 @@ CARDS = [
         viz={},
     ),
     dict(
-        key="kpi_repeat", name="KPI - Repeat customer rate", display="scalar",
+        key="kpi_repeat", name="Repeat rate", aliases=["KPI - Repeat customer rate"],
+        display="scalar",
         table="fct_order_items",
         description="Share of customers who placed 2 or more revenue orders "
                     "within the selected filters.",
@@ -256,19 +265,20 @@ limit 10""",
     ),
     # ---- 4) Revenue by state -------------------------------------------
     dict(
-        key="state_revenue", name="Revenue by customer state", display="bar",
+        key="state_revenue", name="Revenue by customer state", display="row",
         table="fct_order_items",
-        description="Revenue by the customer's state at the time of the order. "
-                    + REVENUE_NOTE,
+        description="The 10 customer states (state at the time of the order) "
+                    f"with the highest revenue. {REVENUE_NOTE}",
         sql=f"""with items as ({ITEMS_FILTERED})
 select customer_state as state, sum(revenue) as revenue
 from items
 group by customer_state
-order by revenue desc""",
+order by revenue desc
+limit 10""",
         viz={
             "graph.dimensions": ["state"],
             "graph.metrics": ["revenue"],
-            "graph.x_axis.title_text": "Customer state",
+            "graph.show_values": True,
             "column_settings": {col("revenue"): {**BRL, "decimals": 0}},
         },
     ),
@@ -308,18 +318,34 @@ order by 1""",
         key="review_late", name="Average review score: late vs on-time orders",
         display="bar", table="fct_orders",
         description=None,  # filled in from live data, see insight_description()
-        sql=f"""select
-    case when fct_orders.is_late then 'Late' else 'On time' end as delivery,
-    avg(fct_orders.review_score) as avg_review_score,
-    count(*)                     as orders
-from marts.fct_orders
-{DELIVERED_ORDERS_WHERE}
-  and fct_orders.review_score is not null
-group by 1
-order by 1 desc""",
+        # "status" is a series breakdown so each bar gets its own color;
+        # "delivery" is the x-axis label and carries the order count (n).
+        sql=f"""with per_group as (
+    select
+        case when fct_orders.is_late then 'Late' else 'On time' end as status,
+        avg(fct_orders.review_score) as avg_review_score,
+        count(*)                     as orders
+    from marts.fct_orders
+    {DELIVERED_ORDERS_WHERE}
+      and fct_orders.review_score is not null
+    group by 1
+)
+select
+    status || ' (n=' || to_char(orders, 'FM999,999,999') || ')' as delivery,
+    status,
+    avg_review_score,
+    orders
+from per_group
+order by status desc""",
         viz={
-            "graph.dimensions": ["delivery"],
+            "graph.dimensions": ["delivery", "status"],
             "graph.metrics": ["avg_review_score"],
+            "stackable.stack_type": "stacked",  # one bar per x value, not side by side
+            "graph.tooltip_columns": [col("orders")],
+            "series_settings": {
+                "Late": {"color": "#E8590C", "title": "Late"},
+                "On time": {"color": "#98A2B3", "title": "On time"},
+            },
             "graph.show_values": True,
             "graph.y_axis.min": 0,
             "graph.y_axis.max": 5,
@@ -346,18 +372,27 @@ TAGS = {
     "state": ("state", "customer_state", "string/="),
 }
 
+# Markdown text card shown at the top of the dashboard.
+INTRO_TEXT = f"""**About this dashboard**
+- **Data source:** Olist public Brazilian e-commerce dataset (Kaggle), modeled with dbt (`marts` schema).
+- **Revenue** = item price + freight, excluding canceled/unavailable orders.
+- **KPI cards** cover all data (unless you set the Date range filter). \
+  **Trend charts** show {TREND_START[:7]} to 2018-08 only (data outside this window is very sparse)."""
+TEXT_KEY = "intro_text"
+
 # Grid is 24 columns wide. (card key, row, col, width, height)
 LAYOUT = [
-    ("kpi_revenue", 0, 0, 5, 3),
-    ("kpi_orders", 0, 5, 5, 3),
-    ("kpi_aov", 0, 10, 5, 3),
-    ("kpi_customers", 0, 15, 5, 3),
-    ("kpi_repeat", 0, 20, 4, 3),
-    ("trend_revenue", 3, 0, 24, 7),
-    ("top_categories", 10, 0, 12, 8),
-    ("state_revenue", 10, 12, 12, 8),
-    ("trend_delivery", 18, 0, 14, 7),
-    ("review_late", 18, 14, 10, 7),
+    (TEXT_KEY, 0, 0, 24, 3),
+    ("kpi_revenue", 3, 0, 5, 3),
+    ("kpi_orders", 3, 5, 5, 3),
+    ("kpi_aov", 3, 10, 5, 3),
+    ("kpi_customers", 3, 15, 5, 3),
+    ("kpi_repeat", 3, 20, 4, 3),
+    ("trend_revenue", 6, 0, 24, 7),
+    ("top_categories", 13, 0, 12, 8),
+    ("state_revenue", 13, 12, 12, 8),
+    ("trend_delivery", 21, 0, 14, 7),
+    ("review_late", 21, 14, 10, 7),
 ]
 
 
@@ -398,12 +433,15 @@ def upsert_cards(mb: Metabase, db_id: int, coll_id: int, fields: dict) -> dict[s
                 "native": {"query": card["sql"].strip(), "template-tags": template_tags(card, fields)},
             },
         }
-        if card["name"] in existing:
-            cid = existing[card["name"]]
+        # Match by current name first, then by old names (renamed cards).
+        match = next((n for n in [card["name"], *card.get("aliases", [])] if n in existing), None)
+        if match:
+            cid = existing[match]
             if card["description"] is None:
                 body.pop("description")  # keep the live-data description
             mb.put(f"/card/{cid}", json=body)
-            print(f"  updated card {cid:>4}  {card['name']}")
+            renamed = f"  (was '{match}')" if match != card["name"] else ""
+            print(f"  updated card {cid:>4}  {card['name']}{renamed}")
         else:
             cid = mb.post("/card", json=body)["id"]
             print(f"  created card {cid:>4}  {card['name']}")
@@ -446,10 +484,29 @@ def upsert_dashboard(mb: Metabase, coll_id: int, card_ids: dict[str, int]) -> in
     # Reuse existing dashcard ids (per card) so the update is in place.
     current = mb.get(f"/dashboard/{dash_id}").get("dashcards", [])
     dashcard_id_by_card = {dc["card_id"]: dc["id"] for dc in current if dc.get("card_id")}
+    text_dashcard_ids = [
+        dc["id"] for dc in current
+        if not dc.get("card_id")
+        and dc.get("visualization_settings", {}).get("virtual_card", {}).get("display") == "text"
+    ]
 
     cards_by_key = {c["key"]: c for c in CARDS}
     dashcards = []
     for i, (key, row, column, width, height) in enumerate(LAYOUT):
+        if key == TEXT_KEY:
+            # Text card: no saved question behind it. Reuse the existing one.
+            dashcards.append({
+                "id": text_dashcard_ids[0] if text_dashcard_ids else -(i + 1),
+                "card_id": None,
+                "row": row, "col": column, "size_x": width, "size_y": height,
+                "parameter_mappings": [],
+                "visualization_settings": {
+                    "virtual_card": {"name": None, "display": "text", "archived": False,
+                                     "dataset_query": {}, "visualization_settings": {}},
+                    "text": INTRO_TEXT,
+                },
+            })
+            continue
         cid = card_ids[key]
         sql = cards_by_key[key]["sql"]
         mappings = [
@@ -495,9 +552,12 @@ def check_dashboard(mb: Metabase, dash_id: int) -> bool:
     ok = True
     print(f"\n  {'card':<56} {'no filter':>10} {'filtered':>10}")
     for dc in sorted(dash["dashcards"], key=lambda d: (d["row"], d["col"])):
+        if not dc.get("card_id"):
+            print(f"  {'(text card)':<56} {'ok':>10}")
+            continue
         cid, name = dc["card_id"], dc["card"]["name"]
         mapped = {m["parameter_id"] for m in dc["parameter_mappings"]}
-        results = []
+        results, first_row = [], None
         for params in ([], [p for p in TEST_FILTERS if p["id"] in mapped]):
             res = mb.post(
                 f"/dashboard/{dash_id}/dashcard/{dc['id']}/card/{cid}/query",
@@ -509,7 +569,10 @@ def check_dashboard(mb: Metabase, dash_id: int) -> bool:
                 print(f"    ! {name}: {res.get('error')}")
             else:
                 results.append(f"{res['row_count']} rows")
+                if not params:
+                    first_row = res["data"]["rows"][0] if res["data"]["rows"] else None
         print(f"  {name:<56} {results[0]:>10} {results[1]:>10}  filters={sorted(mapped)}")
+        print(f"    first row (no filter): {first_row}")
     return ok
 
 
