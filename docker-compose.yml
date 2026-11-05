@@ -11,5 +11,27 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       - ./data/raw:/data/raw:ro
+
+  metabase:
+    image: metabase/metabase:v0.65.3.3
+    container_name: olist_metabase
+    depends_on:
+      - postgres
+    environment:
+      # Metabase's own app data (users, questions, dashboards) lives in an H2 file
+      # on a persistent volume, so it survives container restarts.
+      MB_DB_FILE: /metabase-data/metabase.db
+    ports:
+      - "3000:3000"
+    volumes:
+      - mbdata:/metabase-data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:3000/api/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
 volumes:
   pgdata:
+  mbdata:
