@@ -242,6 +242,8 @@ order by 1""",
             "graph.metrics": ["revenue", "orders"],
             "graph.x_axis.title_text": "Purchase month",
             "graph.y_axis.title_text": "Revenue",
+            # Without this, Metabase reuses the left title on the right axis.
+            "graph.y_axis.right.title_text": "Orders",
             "series_settings": {
                 "revenue": {"axis": "left", "title": "Revenue"},
                 "orders": {"axis": "right", "title": "Orders"},
@@ -311,6 +313,8 @@ order by 1""",
             "graph.metrics": ["late_delivery_rate", "avg_delivery_days"],
             "graph.x_axis.title_text": "Purchase month",
             "graph.y_axis.title_text": "Late delivery rate",
+            # Without this, Metabase reuses the left title on the right axis.
+            "graph.y_axis.right.title_text": "Avg delivery days",
             "series_settings": {
                 "late_delivery_rate": {"axis": "left", "title": "Late delivery rate"},
                 "avg_delivery_days": {"axis": "right", "title": "Avg delivery days"},
