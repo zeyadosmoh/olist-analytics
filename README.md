@@ -163,7 +163,7 @@ Requirements: Docker with Compose, Python 3, and the Olist CSV files.
 1. **Clone and configure**
 
    ```bash
-   git clone <this-repo-url> olist-analytics && cd olist-analytics
+   git clone https://github.com/zeyadosmoh/olist-analytics.git olist-analytics && cd olist-analytics
    cp .env.example .env        # then edit .env and set your own passwords
    ```
 
