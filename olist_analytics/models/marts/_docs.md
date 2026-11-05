@@ -9,7 +9,8 @@ items + freight (16.01M vs 15.84M) because:
   them were paid R$0.00. Almost all are `unavailable` (603) or `canceled`
   (164; the 3 R$0.00 orders are among these): paid, then never fulfilled.
 - ~2% of the gap: customers paid slightly more than the items, mostly on
-  multi-installment payments (installment interest).
+  multi-installment payments (this fits installment interest;
+  the data can't prove the cause).
 - A tiny negative part: payments slightly below item value (vouchers/rounding).
 {% enddocs %}
 
