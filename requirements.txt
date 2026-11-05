@@ -6,3 +6,4 @@ dbt-extractor==0.6.0
 dbt-postgres==1.11.0
 dbt-protos==1.0.615
 dbt-state==2.62.8
+requests==2.34.2

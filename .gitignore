@@ -5,3 +5,4 @@ __pycache__/
 target/
 logs/
 CLAUDE.md
+*.swp
