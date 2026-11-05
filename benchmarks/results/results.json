@@ -1,0 +1,244 @@
+{
+  "indexes": [
+    "marts.fct_order_items_customer_state_purchased_at_order_id_reven_idx1",
+    "marts.fct_order_items_purchased_at_category_revenue_idx1"
+  ],
+  "results": {
+    "a_monthly_trend": {
+      "marts": {
+        "no_index": {
+          "median_ms": 58.836,
+          "min_ms": 40.182,
+          "max_ms": 66.678,
+          "planning_ms": 0.136,
+          "buffers": 3051,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            63.153,
+            66.678,
+            47.029,
+            58.836,
+            40.182
+          ]
+        },
+        "default": {
+          "median_ms": 31.68,
+          "min_ms": 24.427,
+          "max_ms": 37.088,
+          "planning_ms": 0.138,
+          "buffers": 139,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            35.74,
+            26.864,
+            37.088,
+            31.68,
+            24.427
+          ]
+        }
+      },
+      "raw": {
+        "default": {
+          "median_ms": 129.558,
+          "min_ms": 121.614,
+          "max_ms": 186.641,
+          "planning_ms": 0.216,
+          "buffers": 6443,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            121.614,
+            129.558,
+            124.781,
+            186.641,
+            131.309
+          ]
+        }
+      },
+      "staging": {
+        "default": {
+          "median_ms": 148.606,
+          "min_ms": 144.276,
+          "max_ms": 159.658,
+          "planning_ms": 0.3,
+          "buffers": 6443,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            159.658,
+            144.276,
+            158.597,
+            144.946,
+            148.606
+          ]
+        }
+      }
+    },
+    "b_top_categories": {
+      "marts": {
+        "no_index": {
+          "median_ms": 28.885,
+          "min_ms": 24.893,
+          "max_ms": 31.728,
+          "planning_ms": 0.121,
+          "buffers": 3051,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            31.728,
+            24.893,
+            30.349,
+            28.885,
+            25.374
+          ]
+        },
+        "default": {
+          "median_ms": 14.878,
+          "min_ms": 14.648,
+          "max_ms": 26.78,
+          "planning_ms": 0.122,
+          "buffers": 289,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            14.792,
+            15.678,
+            14.648,
+            26.78,
+            14.878
+          ]
+        }
+      },
+      "marts_monthly": {
+        "no_index": {
+          "median_ms": 0.325,
+          "min_ms": 0.297,
+          "max_ms": 0.526,
+          "planning_ms": 0.085,
+          "buffers": 17,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            0.374,
+            0.325,
+            0.3,
+            0.526,
+            0.297
+          ]
+        },
+        "default": {
+          "median_ms": 0.315,
+          "min_ms": 0.272,
+          "max_ms": 0.527,
+          "planning_ms": 0.068,
+          "buffers": 17,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            0.282,
+            0.315,
+            0.521,
+            0.527,
+            0.272
+          ]
+        }
+      },
+      "raw": {
+        "default": {
+          "median_ms": 145.175,
+          "min_ms": 121.379,
+          "max_ms": 151.923,
+          "planning_ms": 0.318,
+          "buffers": 5737,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            121.379,
+            145.175,
+            150.36,
+            151.923,
+            135.605
+          ]
+        }
+      },
+      "staging": {
+        "default": {
+          "median_ms": 156.466,
+          "min_ms": 132.832,
+          "max_ms": 181.65,
+          "planning_ms": 0.467,
+          "buffers": 5737,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            132.832,
+            145.112,
+            174.709,
+            156.466,
+            181.65
+          ]
+        }
+      }
+    },
+    "c_review_late": {
+      "marts": {
+        "no_index": {
+          "median_ms": 40.608,
+          "min_ms": 31.675,
+          "max_ms": 61.106,
+          "planning_ms": 0.08,
+          "buffers": 2432,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            31.675,
+            42.982,
+            61.106,
+            40.608,
+            34.756
+          ]
+        },
+        "default": {
+          "median_ms": 36.224,
+          "min_ms": 34.686,
+          "max_ms": 63.67,
+          "planning_ms": 0.091,
+          "buffers": 2432,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            34.686,
+            36.224,
+            63.67,
+            54.543,
+            35.724
+          ]
+        }
+      },
+      "raw": {
+        "default": {
+          "median_ms": 539.61,
+          "min_ms": 462.046,
+          "max_ms": 560.683,
+          "planning_ms": 0.167,
+          "buffers": 4640,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            462.046,
+            539.61,
+            479.402,
+            560.683,
+            547.027
+          ]
+        }
+      },
+      "staging": {
+        "default": {
+          "median_ms": 569.258,
+          "min_ms": 511.733,
+          "max_ms": 638.797,
+          "planning_ms": 0.202,
+          "buffers": 4640,
+          "jit_ms": 0.0,
+          "samples_ms": [
+            622.871,
+            569.258,
+            638.797,
+            557.147,
+            511.733
+          ]
+        }
+      }
+    }
+  }
+}
