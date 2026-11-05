@@ -60,7 +60,7 @@ picking one number, the gap was broken down until every centavo was explained:
 
 | part of the gap | amount (R$) |
 |---|---:|
-| Payments on orders that have **no item rows**: 775 orders, mostly `unavailable` (603) or `canceled` (164); 3 of the canceled ones were paid R$0.00 | 162,591.95 |
+| 775 orders with payment records but no item rows; 3 of them were paid R$0.00. Mostly `unavailable` (603) or `canceled` (164, including the 3 R$0.00 orders) | 162,591.95 |
 | Customers paid **more** than items + freight. R$3,064.38 of this is on orders paid in several installments, which fits installment interest | 3,071.17 |
 | Customers paid **less** than items + freight (for example vouchers or rounding) | −344.24 |
 | **Total** | **165,318.88** |
