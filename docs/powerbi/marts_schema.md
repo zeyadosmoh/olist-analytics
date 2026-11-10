@@ -5,6 +5,7 @@ Reference for building the Power BI model on top of the dbt marts.
 - **Database:** `olist` on `localhost:5433` (Postgres 16, container `olist_pg`)
 - **Schema:** `marts` (all 5 tables are built by dbt as plain tables)
 - **Login:** `powerbi_ro`, a read-only role with `SELECT` on `marts` only. It has no access to `raw` or `staging`. The password is `POWERBI_RO_PASSWORD` in `.env`.
+- **Connection limit:** `powerbi_ro` has `CONNECTION LIMIT 25` (the server allows 100 in total). Power BI loads tables in parallel and opens extra connections for metadata, so a limit of 10 failed with `53300: too many connections for role "powerbi_ro"`.
 - **Snapshot:** row counts below were measured on 2026-11-10. Purchases range from 2016-09-04 to 2018-10-17.
 
 Postgres does not enforce primary or foreign keys on these tables (dbt builds them with `CREATE TABLE AS`, so every column shows as nullable). dbt tests check the keys instead (`unique`, `not_null`, `relationships` in `olist_analytics/models/marts/_marts.yml`). The checks below were also run against the data.
