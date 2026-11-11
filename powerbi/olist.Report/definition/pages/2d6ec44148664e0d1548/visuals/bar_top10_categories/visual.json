@@ -3,10 +3,10 @@
   "name": "bar_top10_categories",
   "position": {
     "x": 16,
-    "y": 410,
+    "y": 380,
     "z": 8000,
     "width": 408,
-    "height": 294,
+    "height": 324,
     "tabOrder": 8000
   },
   "visual": {
@@ -23,11 +23,11 @@
                       "Entity": "Products"
                     }
                   },
-                  "Property": "category"
+                  "Property": "Category Name"
                 }
               },
-              "queryRef": "Products.category",
-              "nativeQueryRef": "category"
+              "queryRef": "Products.Category Name",
+              "nativeQueryRef": "Category Name"
             }
           ]
         },
@@ -69,6 +69,34 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "categoryAxis": [
+        {
+          "properties": {
+            "innerPadding": {
+              "expr": {
+                "Literal": {
+                  "Value": "20L"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -89,6 +117,19 @@
             }
           }
         }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
       ]
     },
     "drillFilterOtherVisuals": true
@@ -104,7 +145,7 @@
                 "Entity": "Products"
               }
             },
-            "Property": "category"
+            "Property": "Category Name"
           }
         },
         "type": "TopN",
@@ -137,7 +178,7 @@
                               "Source": "p"
                             }
                           },
-                          "Property": "category"
+                          "Property": "Category Name"
                         },
                         "Name": "field"
                       }
@@ -181,7 +222,7 @@
                             "Source": "p"
                           }
                         },
-                        "Property": "category"
+                        "Property": "Category Name"
                       }
                     }
                   ],

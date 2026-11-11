@@ -56,7 +56,7 @@ table Date
 		annotation SummarizationSetBy = Automatic
 
 	column 'Month Start'
-		formatString: General Date
+		formatString: mmm yyyy
 		lineageTag: 4ed79c36-ca0d-4979-b39c-da0a2eaee8bf
 		summarizeBy: none
 		isNameInferred

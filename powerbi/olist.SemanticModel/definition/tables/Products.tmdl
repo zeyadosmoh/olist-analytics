@@ -92,6 +92,12 @@ table Products
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
 
+	column 'Category Name' = SUBSTITUTE ( Products[category], "_", " " )
+		lineageTag: 50f79b9a-a354-4f00-8153-2ce2d5c2a6fb
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
 	partition Products = m
 		mode: import
 		source =

@@ -3,10 +3,10 @@
   "name": "bar_revenue_by_state",
   "position": {
     "x": 436,
-    "y": 410,
+    "y": 380,
     "z": 9000,
     "width": 408,
-    "height": 294,
+    "height": 324,
     "tabOrder": 9000
   },
   "visual": {
@@ -69,6 +69,21 @@
         "isDefaultSort": false
       }
     },
+    "objects": {
+      "labels": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     "visualContainerObjects": {
       "title": [
         {
@@ -84,6 +99,19 @@
               "expr": {
                 "Literal": {
                   "Value": "'Revenue by State'"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "subTitle": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
                 }
               }
             }
