@@ -1,0 +1,33 @@
+createOrReplace
+
+	ref table _Measures
+
+		measure Revenue = SUM ( 'Order Items'[revenue] )
+			formatString: \R\$\ #,0
+
+		measure Orders = COUNTROWS ( Orders )
+			formatString: #,0
+
+		measure Customers = DISTINCTCOUNT ( Orders[customer_unique_id] )
+			formatString: #,0
+
+		measure 'Items Sold' = CALCULATE ( COUNTROWS ( 'Order Items' ), 'Order Items'[is_revenue_order] = TRUE () )
+			formatString: #,0
+
+		measure 'Avg Order Value' = DIVIDE ( [Revenue], CALCULATE ( DISTINCTCOUNT ( 'Order Items'[order_id] ), 'Order Items'[is_revenue_order] = TRUE () ) )
+			formatString: \R\$\ #,0.00
+
+		measure 'Avg Review' = AVERAGE ( Orders[review_score] )
+			formatString: 0.00
+
+		measure 'Avg Delivery Days' = AVERAGE ( Orders[delivery_days] )
+			formatString: 0.0
+
+		measure 'Late Delivery %' = DIVIDE ( CALCULATE ( COUNTROWS ( Orders ), Orders[is_late] = TRUE () ), CALCULATE ( COUNTROWS ( Orders ), NOT ISBLANK ( Orders[is_late] ) ) )
+			formatString: 0.0%
+
+		measure 'Avg Review (Late)' = CALCULATE ( [Avg Review], Orders[is_late] = TRUE () )
+			formatString: 0.00
+
+		measure 'Avg Review (On Time)' = CALCULATE ( [Avg Review], Orders[is_late] = FALSE (), NOT ISBLANK ( Orders[is_late] ) )
+			formatString: 0.00

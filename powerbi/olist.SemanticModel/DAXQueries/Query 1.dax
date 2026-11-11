@@ -1,0 +1,25 @@
+DEFINE
+    MEASURE '_Measures'[Revenue] = SUM ( 'Order Items'[revenue] )
+    MEASURE '_Measures'[Orders] = COUNTROWS ( Orders )
+    MEASURE '_Measures'[Customers] = DISTINCTCOUNT ( Orders[customer_unique_id] )
+    MEASURE '_Measures'[Items Sold] = CALCULATE ( COUNTROWS ( 'Order Items' ), 'Order Items'[is_revenue_order] = TRUE () )
+    MEASURE '_Measures'[Avg Order Value] = DIVIDE ( [Revenue], CALCULATE ( DISTINCTCOUNT ( 'Order Items'[order_id] ), 'Order Items'[is_revenue_order] = TRUE () ) )
+    MEASURE '_Measures'[Avg Review] = AVERAGE ( Orders[review_score] )
+    MEASURE '_Measures'[Avg Delivery Days] = AVERAGE ( Orders[delivery_days] )
+    MEASURE '_Measures'[Late Delivery %] = DIVIDE ( CALCULATE ( COUNTROWS ( Orders ), Orders[is_late] = TRUE () ), CALCULATE ( COUNTROWS ( Orders ), NOT ISBLANK ( Orders[is_late] ) ) )
+    MEASURE '_Measures'[Avg Review (Late)] = CALCULATE ( [Avg Review], Orders[is_late] = TRUE () )
+    MEASURE '_Measures'[Avg Review (On Time)] = CALCULATE ( [Avg Review], Orders[is_late] = FALSE () )
+
+EVALUATE
+ROW (
+    "Revenue", [Revenue],
+    "Orders", [Orders],
+    "Customers", [Customers],
+    "Items Sold", [Items Sold],
+    "Avg Order Value", [Avg Order Value],
+    "Avg Review", [Avg Review],
+    "Avg Delivery Days", [Avg Delivery Days],
+    "Late %", [Late Delivery %],
+    "Review Late", [Avg Review (Late)],
+    "Review On Time", [Avg Review (On Time)]
+)

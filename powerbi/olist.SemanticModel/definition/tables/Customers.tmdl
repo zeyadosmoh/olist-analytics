@@ -1,0 +1,100 @@
+table Customers
+	lineageTag: ca8c6f9d-e16c-4003-bd5b-f976c93a5e4f
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: bb928d4a-28d5-4533-9e49-9ec18d3163c4
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: 1631ab08-e6b8-4353-bb7d-534dc063c42f
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: e0455795-78e9-4c12-8f08-ed203ae9ea3d
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column first_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 4189b1cd-b153-4678-8d71-1d0abd879273
+		summarizeBy: none
+		sourceColumn: first_order_date
+
+		variation Variation
+			isDefault
+			relationship: 51c94d57-b107-45f5-b15d-74127314cbaa
+			defaultHierarchy: LocalDateTable_3b76f2a5-fcd6-4f26-8828-0e4d9b80a998.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column last_order_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 57c3ba33-f5fd-4713-aea3-cf0aa7beea06
+		summarizeBy: none
+		sourceColumn: last_order_date
+
+		variation Variation
+			isDefault
+			relationship: 56c0a97d-511a-4c7f-917b-92d4470e7364
+			defaultHierarchy: LocalDateTable_1b4ff5a8-0cc6-4e68-b3cf-15dfbfcd6058.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column orders_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 78f58a68-02e8-46d0-b3a7-065669fa49fb
+		summarizeBy: sum
+		sourceColumn: orders_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column lifetime_value
+		dataType: double
+		lineageTag: b9b42bbf-c413-4115-a5a5-063de328e85b
+		summarizeBy: sum
+		sourceColumn: lifetime_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column is_repeat
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 3377a85f-db79-450c-8f77-8e53a588665b
+		summarizeBy: none
+		sourceColumn: is_repeat
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Customers = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "olist"),
+				    marts_dim_customers = Source{[Schema="marts",Item="dim_customers"]}[Data]
+				in
+				    marts_dim_customers
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

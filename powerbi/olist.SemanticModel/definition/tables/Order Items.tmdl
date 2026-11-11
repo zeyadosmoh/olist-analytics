@@ -1,0 +1,132 @@
+table 'Order Items'
+	lineageTag: 0e668a3f-d7e4-4f16-88e0-07d83601a902
+
+	column order_item_key
+		dataType: string
+		lineageTag: ec3000f7-7e6e-4ab9-9a5a-f4c9ee8764f4
+		summarizeBy: none
+		sourceColumn: order_item_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_id
+		dataType: string
+		lineageTag: 6f8a8824-09c8-4ec8-a06c-184bc0f9ebc8
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column item_number
+		dataType: int64
+		formatString: 0
+		lineageTag: 12b63124-0500-4233-a16c-0499a4af4018
+		summarizeBy: sum
+		sourceColumn: item_number
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		lineageTag: d5b5aba3-6b65-477a-ad2b-75234176b548
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: 38b14ff1-0fe4-4a8e-99eb-aaf820ebbcfc
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: 5742ea66-2af6-4284-bf9d-07aa5db9d901
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_state
+		dataType: string
+		lineageTag: e9fc2b36-5f4a-4849-baf9-a4c50759a29e
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column purchased_at
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0cc64a86-d15c-4f88-9ea1-4c98288c9c68
+		summarizeBy: none
+		sourceColumn: purchased_at
+
+		variation Variation
+			isDefault
+			relationship: b81b6eb4-abb0-461f-b16c-7487485f51f9
+			defaultHierarchy: LocalDateTable_d4a93d1b-bd25-476f-bc07-ef1130da19c6.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column is_revenue_order
+		dataType: boolean
+		formatString: """TRUE"";""TRUE"";""FALSE"""
+		lineageTag: 14a16a0a-ffa4-41de-927c-80019f514340
+		summarizeBy: none
+		sourceColumn: is_revenue_order
+
+		annotation SummarizationSetBy = Automatic
+
+	column price
+		dataType: double
+		lineageTag: 513efe90-5977-4006-83f5-ef871ad00bc4
+		summarizeBy: sum
+		sourceColumn: price
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		lineageTag: e9431bc7-dfee-4692-b679-2266713bc037
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column revenue
+		dataType: double
+		lineageTag: 3014ecab-87a1-4921-a7f5-fffa1bd23c72
+		summarizeBy: sum
+		sourceColumn: revenue
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Purchase Date' = DATE ( YEAR ( 'Order Items'[purchased_at] ), MONTH ( 'Order Items'[purchased_at] ), DAY ( 'Order Items'[purchased_at] ) )
+		lineageTag: 52ad3a77-737e-4caa-b84c-2dd8ce1ad2be
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Order Items' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "olist"),
+				    marts_fct_order_items = Source{[Schema="marts",Item="fct_order_items"]}[Data]
+				in
+				    marts_fct_order_items
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

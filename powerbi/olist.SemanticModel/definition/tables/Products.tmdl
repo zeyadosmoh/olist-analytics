@@ -1,0 +1,107 @@
+table Products
+	lineageTag: 628510cd-8b45-4438-a610-0a02ac7916bb
+
+	column product_id
+		dataType: string
+		lineageTag: 36fbcfc1-0955-4f52-ab54-d349f93d147b
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column category
+		dataType: string
+		lineageTag: a547202b-a315-4c10-b328-50e46cc753dd
+		summarizeBy: none
+		sourceColumn: category
+
+		annotation SummarizationSetBy = Automatic
+
+	column category_name_pt
+		dataType: string
+		lineageTag: c8d70eca-e7ac-49d9-ae16-fadd8fb0ca6e
+		summarizeBy: none
+		sourceColumn: category_name_pt
+
+		annotation SummarizationSetBy = Automatic
+
+	column name_length
+		dataType: int64
+		formatString: 0
+		lineageTag: e79c931c-97eb-4fb4-95fe-255cb507f115
+		summarizeBy: none
+		sourceColumn: name_length
+
+		annotation SummarizationSetBy = Automatic
+
+	column description_length
+		dataType: int64
+		formatString: 0
+		lineageTag: c8cdb0bd-882b-4925-bb35-e53381d8ec62
+		summarizeBy: none
+		sourceColumn: description_length
+
+		annotation SummarizationSetBy = Automatic
+
+	column photos_count
+		dataType: int64
+		formatString: 0
+		lineageTag: 2c6c0de3-01e4-4346-830f-23b29503d2ab
+		summarizeBy: none
+		sourceColumn: photos_count
+
+		annotation SummarizationSetBy = Automatic
+
+	column weight_g
+		dataType: double
+		lineageTag: c3b0cc44-9684-4e22-8f70-f3d07e84cf3d
+		summarizeBy: none
+		sourceColumn: weight_g
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column length_cm
+		dataType: double
+		lineageTag: 9067d2f5-506d-4886-ae82-a079e0da339d
+		summarizeBy: none
+		sourceColumn: length_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column height_cm
+		dataType: double
+		lineageTag: 6b27e9c5-0db6-48ab-a704-5b9bbaf7d6c1
+		summarizeBy: none
+		sourceColumn: height_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column width_cm
+		dataType: double
+		lineageTag: 82cb2aae-01a8-44ff-a67f-d3c0097565a9
+		summarizeBy: none
+		sourceColumn: width_cm
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition Products = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "olist"),
+				    marts_dim_products = Source{[Schema="marts",Item="dim_products"]}[Data]
+				in
+				    marts_dim_products
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

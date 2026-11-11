@@ -1,0 +1,65 @@
+relationship 51c94d57-b107-45f5-b15d-74127314cbaa
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Customers.first_order_date
+	toColumn: LocalDateTable_3b76f2a5-fcd6-4f26-8828-0e4d9b80a998.Date
+
+relationship 56c0a97d-511a-4c7f-917b-92d4470e7364
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Customers.last_order_date
+	toColumn: LocalDateTable_1b4ff5a8-0cc6-4e68-b3cf-15dfbfcd6058.Date
+
+relationship b81b6eb4-abb0-461f-b16c-7487485f51f9
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Order Items'.purchased_at
+	toColumn: LocalDateTable_d4a93d1b-bd25-476f-bc07-ef1130da19c6.Date
+
+relationship 29fa281e-0fec-4bef-81c9-1a5df421e7eb
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Orders.purchased_at
+	toColumn: LocalDateTable_62c1b9e6-b415-4725-a02b-f2f9243aa2a2.Date
+
+relationship d6edb116-3f55-453e-bf72-5446aa89a941
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Orders.approved_at
+	toColumn: LocalDateTable_ec0b82df-6400-4eb4-8af4-a5f5f0213f97.Date
+
+relationship b54b5a08-9da5-4164-bdbc-e9e2d2b26ef1
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Orders.delivered_to_carrier_at
+	toColumn: LocalDateTable_f6842022-9ced-40a1-8784-da13ba320fb0.Date
+
+relationship 700c63b8-ed7d-48cf-b36a-97e196d197e7
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Orders.delivered_to_customer_at
+	toColumn: LocalDateTable_fd308ffe-0fbb-461d-be27-7f452a23698a.Date
+
+relationship 6583a311-3033-42bf-8fa9-cabf9d906760
+	joinOnDateBehavior: datePartOnly
+	fromColumn: Orders.estimated_delivery_at
+	toColumn: LocalDateTable_4e62c4a2-6982-42d5-9b76-cea2ede1b5c8.Date
+
+relationship AutoDetected_2856d125-cfbd-4cb2-9a33-fc72f0c04875
+	fromColumn: 'Order Items'.customer_unique_id
+	toColumn: Customers.customer_unique_id
+
+relationship AutoDetected_48b6d992-ef52-499d-9999-5fb5325154df
+	fromColumn: Orders.customer_unique_id
+	toColumn: Customers.customer_unique_id
+
+relationship AutoDetected_cd419fb1-82da-4095-84d2-524c97d8215e
+	fromColumn: 'Order Items'.product_id
+	toColumn: Products.product_id
+
+relationship AutoDetected_ce838aa3-1259-4e1b-9c95-d6b9f897dec3
+	isActive: false
+	fromColumn: 'Order Items'.order_id
+	toColumn: Orders.order_id
+
+relationship 570e2151-0175-e968-1b0c-8b4f2a27f286
+	fromColumn: Orders.'Purchase Date'
+	toColumn: Date.Date
+
+relationship eeda76db-22a0-9f90-57b7-cc5e83a3cd02
+	fromColumn: 'Order Items'.'Purchase Date'
+	toColumn: Date.Date
+

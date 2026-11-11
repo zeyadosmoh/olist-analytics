@@ -1,0 +1,55 @@
+table _Measures
+	lineageTag: d9ec5984-2006-4509-90c3-97c39355f4fc
+
+	measure Revenue = SUM ( 'Order Items'[revenue] )
+		formatString: \R\$\ #,0
+		lineageTag: 33e9fdf5-e477-4e6a-a519-7b9300bb758a
+
+	measure Orders = COUNTROWS ( Orders )
+		formatString: #,0
+		lineageTag: 5db126a3-3edf-4985-858d-5da1a764211d
+
+	measure Customers = DISTINCTCOUNT ( Orders[customer_unique_id] )
+		formatString: #,0
+		lineageTag: ace8926f-da3c-482a-ab0a-fcf52a5f8611
+
+	measure 'Items Sold' = CALCULATE ( COUNTROWS ( 'Order Items' ), 'Order Items'[is_revenue_order] = TRUE () )
+		formatString: #,0
+		lineageTag: b23a277c-ea07-4309-88ff-e9c802e5b605
+
+	measure 'Avg Order Value' = DIVIDE ( [Revenue], CALCULATE ( DISTINCTCOUNT ( 'Order Items'[order_id] ), 'Order Items'[is_revenue_order] = TRUE () ) )
+		formatString: \R\$\ #,0.00
+		lineageTag: ffb3c050-1e53-49b9-be56-ee2db10122c2
+
+	measure 'Avg Review' = AVERAGE ( Orders[review_score] )
+		formatString: 0.00
+		lineageTag: 7e23c364-f185-4a02-a9a3-119c9de41e3a
+
+	measure 'Avg Delivery Days' = AVERAGE ( Orders[delivery_days] )
+		formatString: 0.0
+		lineageTag: b7ad83d7-f41e-4989-9298-067d42addb6c
+
+	measure 'Late Delivery %' = DIVIDE ( CALCULATE ( COUNTROWS ( Orders ), Orders[is_late] = TRUE () ), CALCULATE ( COUNTROWS ( Orders ), NOT ISBLANK ( Orders[is_late] ) ) )
+		formatString: 0.0%
+		lineageTag: e4cea555-6f9c-45f2-ac76-51288cedb061
+
+	measure 'Avg Review (Late)' = CALCULATE ( [Avg Review], Orders[is_late] = TRUE () )
+		formatString: 0.00
+		lineageTag: f517881d-b12f-454f-aeb1-fa1abbe74832
+
+	measure 'Avg Review (On Time)' = CALCULATE ( [Avg Review], Orders[is_late] = FALSE (), NOT ISBLANK ( Orders[is_late] ) )
+		formatString: 0.00
+		lineageTag: 8e248d7b-0840-48b6-9fa6-f6b6fe2029b7
+
+	partition _Measures = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+
