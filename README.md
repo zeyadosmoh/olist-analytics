@@ -115,6 +115,34 @@ promises an obvious place to look.
 Month = purchase month; late rate is over delivered orders. Orders/revenue
 follow the revenue rule above.
 
+## Power BI version
+
+The same Sales Overview page, rebuilt in Power BI Desktop on the same marts.
+
+![Power BI Sales Overview: KPIs, monthly revenue, top categories, states and review scores](docs/img/powerbi-sales-overview.png)
+
+- **Direct to the marts.** Power BI Desktop imports the dbt marts from
+  Postgres (Import mode) as `powerbi_ro`, a read-only role that can only
+  `SELECT` from `marts`.
+- **Star schema.** `Order Items` is the fact table, with `Orders`, `Customers`,
+  `Products` and a DAX date table around it. The one fact-to-fact
+  relationship (`Order Items` to `Orders`) is inactive, to avoid ambiguous
+  filter paths.
+- **10 DAX measures** live in a dedicated `_Measures` table. Totals reconcile
+  with the dbt marts and the Metabase dashboard: R$15,735,527.03 revenue,
+  99,441 orders, 4.29 vs 2.27 stars for on-time vs late orders.
+- **Version-controlled as text.** The report is saved as a Power BI Project
+  (PBIP, with PBIR report files and a TMDL model) in [`powerbi/`](powerbi/).
+- **Blank is not false.** In DAX, a blank `is_late` (order not delivered yet)
+  counts as FALSE, which pulls undelivered orders into "on time" (4.21
+  instead of 4.29). `Avg Review (On Time)` adds `NOT ISBLANK(Orders[is_late])`
+  to exclude them.
+- **Complete months only.** Sep-Oct 2018 are excluded from the monthly trend,
+  because the dataset ends in mid-September 2018.
+
+Tables, columns, grain and join keys of the marts are listed in
+[docs/powerbi/marts_schema.md](docs/powerbi/marts_schema.md).
+
 ---
 
 ## Performance
